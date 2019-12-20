@@ -15,8 +15,11 @@
 #import "LoopPageControl.h"
 #import "LoopBannerCollectionView.h"
 
+#if __has_include(<YYWebImage/YYWebImage.h>)
 #import "YYWebImage.h"
-
+#elif __has_include(<SDWebImage/SDWebImage.h>)
+#import "SDWebImage.h"
+#endif
 
 static NSString *const LoopImageCellId = @"LoopImageCell";
 
@@ -255,17 +258,19 @@ static NSString *const LoopImageCellId = @"LoopImageCell";
     } else if ([urlString hasPrefix:@"http://"]
                || [urlString hasPrefix:@"https://"]
                || [urlString rangeOfString:@"/"].location != NSNotFound) {
+      
+#if __has_include(<YYWebImage/YYWebImage.h>)
       //! 网络图片
       [cell.imageView yy_setImageWithURL:[NSURL URLWithString:urlString]
                              placeholder:self.placeholderImage
                                  options:YYWebImageOptionSetImageWithFadeAnimation|YYWebImageOptionProgressiveBlur
-                                progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-                                  
-                                }
+                                progress:nil
                                transform:nil
-                              completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
-                                
-                              }];
+                              completion:nil];
+      
+#elif __has_include(<SDWebImage/SDWebImage.h>)
+      [cell.imageView sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:self.placeholderImage options:SDWebImageProgressiveLoad progress:nil completed:nil];
+#endif
       
     } else {
       if (urlString.length != 0) {
@@ -277,6 +282,7 @@ static NSString *const LoopImageCellId = @"LoopImageCell";
   }
   cell.indexRow = itemIndex;
   return cell;
+
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
