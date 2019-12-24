@@ -3,7 +3,9 @@
 
 效果图如下:
 
-![avatar][base64str]
+![test](https://github.com/476139183/LoopBannerView/raw/master/image.gif)
+
+![gifimage][base64str]
 
 
 
